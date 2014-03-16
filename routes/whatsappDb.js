@@ -1,5 +1,5 @@
-var smsDb = function(){
-	var CLASS = "smsDb";
+var whatsappDb = function(){
+	var CLASS = "whatsappDb";
 	
 	var database = require('./database');
 	var phoneDb = require('./phoneDb');
@@ -9,26 +9,26 @@ var smsDb = function(){
 	var findAll = function(callback)
     	{
     		var METHOD = CLASS + ".findAll: ";
-			console.log(METHOD + 'Retrieving all sms');
+			console.log(METHOD + 'Retrieving all whatsapp');
 			database.collection(
-				database.collectionNames.SMS, 
-				function(err, collectionSms)
+				database.collectionNames.WHATSAPP, 
+				function(err, collectionWhatsapp)
 					{
-						collectionSms.find().toArray(
-							function(err, sms)
+						collectionWhatsapp.find().toArray(
+							function(err, whatsapp)
 								{
 									console.log(METHOD + "err: " + err);
 									if (!err)
 										{
-											console.log(METHOD + "Retrieved nun sms: " + sms.length);
-											//console.log(METHOD + "Retrieved sms: " + JSON.stringify(sms));
-											callback(null,  sms);
+											console.log(METHOD + "Retrieved nun whatsapp: " + whatsapp.length);
+											//console.log(METHOD + "Retrieved whatsapp: " + JSON.stringify(whatsapp));
+											callback(null,  whatsapp);
 										}
 									else
 										{
 											console.log(METHOD + "Errore:" + err);
-											var sms = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
-											callback(err,  sms);
+											var whatsapp = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
+											callback(err,  whatsapp);
 										}
 									}
 						);
@@ -39,31 +39,31 @@ var smsDb = function(){
 	var findAllByIdPhone = function(idPhone, callback)
     	{
     		var METHOD = CLASS + ".findAllByIdPhone: ";
-			console.log(METHOD + 'Retrieving all sms for phone with id: ' + idPhone);
+			console.log(METHOD + 'Retrieving all whatsapp for phone with id: ' + idPhone);
 			database.collection(
-				database.collectionNames.SMS, 
-				function(err, collectionSms)
+				database.collectionNames.WHATSAPP, 
+				function(err, collectionWhatsapp)
 					{
-						collectionSms.find(
+						collectionWhatsapp.find(
 							//{'phone_id':  new BSON.ObjectID(idPhone)},
 							 {'imei':  idPhone},
-							function(err, cursorSms)
+							function(err, cursorWhatsapp)
 								{
-									cursorSms.toArray(
-										function(err, sms)
+									cursorWhatsapp.toArray(
+										function(err, whatsapp)
 											{
 												console.log(METHOD + "err: " + err);
 												if (!err)
 													{
-														console.log(METHOD + "Retrieved nun sms: " + sms.length);
-														//console.log(METHOD + "Retrieved sms: " + JSON.stringify(sms));
-														callback(null,  sms);
+														console.log(METHOD + "Retrieved nun whatsapp: " + whatsapp.length);
+														//console.log(METHOD + "Retrieved whatsapp: " + JSON.stringify(whatsapp));
+														callback(null,  whatsapp);
 													}
 												else
 													{
 														console.log(METHOD + "Errore:" + err);
-														var sms = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
-														callback(err,  sms);
+														var whatsapp = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
+														callback(err,  whatsapp);
 													}
 												}
 										);
@@ -125,28 +125,28 @@ var smsDb = function(){
 				}
 				
 				database.collection(
-					database.collectionNames.SMS, 
-					function(err, collectionSms)
+					database.collectionNames.WHATSAPP, 
+					function(err, collectionWhatsapp)
 						{
-							collectionSms.find(
+							collectionWhatsapp.find(
 								qBuilder.query(),
-								function(err, cursorSms)
+								function(err, cursorWhatsapp)
 									{
-										cursorSms.toArray(
-											function(err, sms)
+										cursorWhatsapp.toArray(
+											function(err, whatsapp)
 												{
 													console.log(METHOD + "err: " + err);
 													if (!err)
 														{
-															console.log(METHOD + "Retrieved nun sms: " + sms.length);
-															console.log(METHOD + "Retrieved sms: " + JSON.stringify(sms));
-															callback(null,  sms);
+															console.log(METHOD + "Retrieved nun whatsapp: " + whatsapp.length);
+															console.log(METHOD + "Retrieved whatsapp: " + JSON.stringify(whatsapp));
+															callback(null,  whatsapp);
 														}
 													else
 														{
 															console.log(METHOD + "Errore:" + err);
-															var sms = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
-															callback(err,  sms);
+															var whatsapp = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
+															callback(err,  whatsapp);
 														}
 													}
 											);
@@ -180,58 +180,58 @@ var smsDb = function(){
 			{
 				var METHOD = CLASS + ".findById: ";
 				
-				console.log(METHOD + 'Retrieving sms by id: ' + id);
-				database.collection( database.collectionNames.SMS, function(err, collection)
+				console.log(METHOD + 'Retrieving whatsapp by id: ' + id);
+				database.collection( database.collectionNames.WHATSAPP, function(err, collection)
 					{
 						collection.findOne(
-							{ '_id': new BSON.ObjectID(id) }, function(err, sms)
+							{ '_id': new BSON.ObjectID(id) }, function(err, whatsapp)
 							{
 								if (!err){
-									callback(null, sms);
+									callback(null, whatsapp);
 								}
 								else{
 									console.log("Errore:" + err);
-									var sms = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""}; 
-									callback(err, sms);
+									var whatsapp = {phone_id:0, _id: 0, imei: "", direction: "", timespamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""}; 
+									callback(err, whatsapp);
 								}
 							});
 					});
 			};
 			
-		var create= function (sms, callback)
+		var create= function (whatsapp, callback)
 				{
 					var METHOD = CLASS + ".create: ";
-					console.log(METHOD + "Creating sms: " + JSON.stringify(sms));
+					console.log(METHOD + "Creating whatsapp: " + JSON.stringify(whatsapp));
 					
-					console.log(METHOD + "Timestamp: " + sms.timestamp);
-					console.log(METHOD + "Timestamp date: " + new Date(sms.timestamp));
-					console.log(METHOD + "Timestamp date UTC: " + convertDateToUTC(new Date(sms.timestamp)));
+					console.log(METHOD + "Timestamp: " + whatsapp.timestamp);
+					console.log(METHOD + "Timestamp date: " + new Date(whatsapp.timestamp));
+					console.log(METHOD + "Timestamp date UTC: " + convertDateToUTC(new Date(whatsapp.timestamp)));
 					
-					database.collection(database.collectionNames.SMS, function(err, collection)
+					database.collection(database.collectionNames.WHATSAPP, function(err, collection)
 						{
 							collection.insert(
-								//{ "phone_id": new BSON.ObjectID(sms.phone_id), "direction": sms.direction, "timespamp": new Date(sms.timespamp), "phoneNumber": sms.phoneNumber, "text": sms.text},
-								{ "phone_id": sms.phone_id,
-									"direction": sms.direction, 
-									"timestamp": new Date(sms.timestamp), 
-									"phoneNumber": sms.phoneNumber, 
-									"nameContact": sms.nameContact,
-									"text": sms.text,
+								//{ "phone_id": new BSON.ObjectID(whatsapp.phone_id), "direction": whatsapp.direction, "timespamp": new Date(whatsapp.timespamp), "phoneNumber": whatsapp.phoneNumber, "text": whatsapp.text},
+								{ "phone_id": whatsapp.phone_id,
+									"direction": whatsapp.direction, 
+									"timestamp": new Date(whatsapp.timestamp), 
+									"phoneNumber": whatsapp.phoneNumber, 
+									"nameContact": whatsapp.nameContact,
+									"text": whatsapp.text,
 									"timeRecord": (new Date()).toISOString()
 								},
 								function(err, result)
 									{
 										if (!err)	
 											{
-												var sms = result[0];
-												console.log(METHOD + 'Sms created: ' + JSON.stringify(sms));
-												callback(null,  sms);
+												var whatsapp = result[0];
+												console.log(METHOD + 'whatsapp created: ' + JSON.stringify(whatsapp));
+												callback(null,  whatsapp);
 											}
 										else
 											{
 												console.log(METHOD + "Errore: " + err);
-												var sms = {phone_id: "", _id: 0, imei: "", direction: "", timestamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
-												callback(err,  sms);
+												var whatsapp = {phone_id: "", _id: 0, imei: "", direction: "", timestamp: "1970-01-01 00:00:00", phoneNumber: "", text: ""};
+												callback(err,  whatsapp);
 											}
 									});
 						});
@@ -364,6 +364,6 @@ var smsDb = function(){
 }();
 
 	
-module.exports = smsDb;
+module.exports = whatsappDb;
 
 

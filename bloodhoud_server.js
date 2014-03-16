@@ -26,6 +26,7 @@ var io = require('socket.io');
 var phone = require('./routes/phone');
 var sms = require('./routes/sms');
 var call = require('./routes/call');
+var whatsapp = require('./routes/whatsapp');
 var database = require('./routes/database');
 var ws_server = require('./bloodhoud_ws_server');
 
@@ -153,6 +154,46 @@ app.get('/phones/call', call.findAll);
  */
 app.get('/phones/phone-:imei/call', call.find);
 
+//WHATSAPP
+//tutti i messaggi whatsapp
+app.get(
+	'/phones/whatsapp', 
+	function(request, response){
+	    response.format({
+	        'application/json': whatsapp.findAll,
+	        'text/html': whatsapp.findAllHTML,
+	        'text/plain': function(){
+	            	response.send('TODO TEXT');
+	        	}
+		})
+	}
+);
+
+
+/*
+ * i messaggi whatsapp di un telefono che rispettano determinate condizioni
+ * I parametri della query string possono essere:
+ * - day=yyyy-mm-dd
+ * - interval[start]=yyyy-mm-dd&interval[end]=yyyy-mm-dd
+ * - direction=outgoing/incoming
+ * - phoneNumber=1234567890
+ * 
+ */
+app.get(
+	'/phones/phone-:imei/whatsapp',
+	function(request, response){
+	    response.format({
+	        'application/json': whatsapp.find,
+	        'text/html': function(){
+	            	response.send('<strong>TODO HTML</strong>');
+	        	},
+	        'text/plain': function(){
+	            	response.send('TODO TEXT');
+	        	}
+		})
+	}
+);
+
 
 
 // ADD new phone
@@ -200,6 +241,19 @@ app.post('/phones/phone-:imei/call', function(request, response){
 	wsServer.sockets.emit("newCall", { call: call.create(request, response) } );
 });
 
+// ADD new WHATSAPP
+/*
+ * nel post vanno specificati i seguenti dati
+ * direction=outgoing/incoming
+ * phoneNumber=0123456789
+ * timespamp=YYYY-MM-DDTHH:mm:ss.000Z (UTC)
+ * text=
+*/
+app.post('/phones/phone-:imei/whatsapp', function(request, response){
+	wsServer.sockets.emit("newWhatsapp", { whatsapp: whatsapp.create(request, response) } );
+});
+
+
 
 // ##########################################
 // WEBSOCKET
@@ -227,6 +281,11 @@ wsServer.sockets.on('connection', function (socket) {
             ws_server.sendTodayCall(socket, data);
         });		
 
+		// after the call list, the client is waiting for today whatsapp messages
+        socket.on('waitForTodayWhatsapp', function(data) {
+            ws_server.sendTodayWhatsapp(socket, data);
+        });		
+
 
 		// when a client calls the 'socket.close()'
 		// function or closes the browser, this event
@@ -238,12 +297,12 @@ wsServer.sockets.on('connection', function (socket) {
 	});
 
 
-var INADDR_ANY = '0.0.0.0';
-var serverIp = INADDR_ANY; // '127.0.0.1';
-var serverPort = 1337;
+var INADDR_ANY = '127.0.0.1'; //'0.0.0.0';
+var serverHost = process.env.VCAP_APP_HOST || INADDR_ANY;
+var serverPort = process.env.VCAP_APP_PORT || 1337;
 
 //app.listen(serverPort);
 server.listen(serverPort);
 
 console.log("> SERVER STARTED");
-console.log("> SERVER LISTENING at http://" + serverIp + ":" + serverPort);
+console.log("> SERVER LISTENING at http://" + serverHost + ":" + serverPort);

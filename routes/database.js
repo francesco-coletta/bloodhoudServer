@@ -1,47 +1,54 @@
+//constant enum
+var collectionNames =  {
+	PHONE: "phones",
+	CALL: "call",
+	SMS: "sms",
+	WHATSAPP: "whatsapp",
+};
+
+
+
 var database = function(){
 	var CLASS = "database";
+	var METHOD = CLASS + ".main: ";
 
-	var mongo = require('mongodb');
-	var dbName = 'bloodhounDB';
+	var dbConnection = require('./databaseCon');
+	var db;
 	
-	var Server = mongo.Server;
-	var Db = mongo.Db;
-	var BSON = mongo.BSONPure;
-	
-	var server = new Server('localhost', 27017,	{ auto_reconnect: true });
-	var db = new Db(dbName, server);
-	db.open(function(err, db)
-			{
-				var METHOD = CLASS + ".open: ";
-				console.log(METHOD + "Connected to database <" + dbName + ">");
-				if (!err)
+	dbConnection(				
+				function(err, database)
 					{
-							/*
-						db.collection(collectionNames.PHONE).drop();
-						db.collection(collectionNames.SMS).drop();
-						populateDB();
-							 */
-						
-						/*
-						 */
-						db.collection(collectionNames.SMS,
-							{ strict: true }, 
-							function(err, collection)
-								{
-									if (err != null)
+						if (!err)
+							{
+								db = database;
+								console.log(METHOD + "Connected do DB");
+								db.collection(
+									collectionNames.SMS,
+									{ strict: true }, 
+									function(err, collection)
 										{
-											console.log("The " + collectionNames.PHONE  +" collection doesn't exist. Creating it with sample data...");
-											//db.collection(smsCollection).drop();
-											db.collection(collectionNames.PHONE).drop();
-											db.collection(collectionNames.CALL).drop();
-											populateDB();
+											if (err != null)
+												{
+													console.log("The " + collectionNames.SMS  +" collection doesn't exist. Creating it with sample data...");
+													//db.collection(smsCollection).drop();
+													db.collection(collectionNames.PHONE).drop();
+													db.collection(collectionNames.CALL).drop();
+													populateDB();
+												}
+											else{
+												console.log(METHOD + "Collection already present");
+											}
 										}
-									else{
-										console.log(METHOD + "Collection already present");
-									}
-								});
+								);
+							}
+						else{
+							console.log(METHOD + "Errore: " + err);
+						}
 					}
-			});
+		);
+		
+	console.log(METHOD + " creation complete");
+	
 	
 	/*--------------------------------------------------------------------------------------------------------------------*/
 	// Populate database with sample data -- Only used once: the first time the application is started.
@@ -74,8 +81,6 @@ var database = function(){
 							}
 					);
 				});
-			
-
 		};
 		
 		
@@ -225,15 +230,29 @@ var database = function(){
 	var purgeDatabase = function(request, response)		
 		{
 			var METHOD = CLASS + ".purgeDatabase: ";
-			db.collection(collectionNames.PHONE).drop();
-			console.log(METHOD + "Dropped collectionNames.PHONE");
-			
-			db.collection(collectionNames.SMS).drop();
-			console.log(METHOD + "Dropped collectionNames.SMS");
-
-			db.collection(collectionNames.CALL).drop();
-			console.log(METHOD + "Dropped collectionNames.CALL");
-			
+			dbConnection(				
+				function(err, database)
+					{
+						if (!err)
+							{
+								db = database;
+								db.collection(collectionNames.PHONE).drop();
+								console.log(METHOD + "Dropped collectionNames.PHONE");
+								
+								db.collection(collectionNames.SMS).drop();
+								console.log(METHOD + "Dropped collectionNames.SMS");
+					
+								db.collection(collectionNames.CALL).drop();
+								console.log(METHOD + "Dropped collectionNames.CALL");
+								
+								db.collection(collectionNames.WHATSAPP).drop();
+								console.log(METHOD + "Dropped collectionNames.WHATSAPP");
+							}
+						else{
+							console.log(METHOD + "Errore: " + err);
+						}
+					}
+			);
 			response.send("Dropped ALL collections into mongoDB");
 		};
 
@@ -242,27 +261,58 @@ var database = function(){
 	// You'd typically not find this code in a real-life app, since the database would already exist.
 	var loadTestData = function(request, response)
 		{
-			populateDB();
+			var METHOD = CLASS + ".loadTestData: ";
+			dbConnection(				
+				function(err, database)
+					{
+						if (!err)
+							{
+								db = database;
+								populateDB();
+							}
+						else{
+							console.log(METHOD + "Errore: " + err);
+						}
+					}
+			)
 			response.send("Test data loaded into collections mongoDB");
-		};
+		}
 
-		
-		
-	//constant
-	var collectionNames =  {
-		PHONE: "phones",
-		CALL: "call",
-		SMS: "sms"
-	};
-
-		
+	//rende disponibile il db
+	var istanceDb = function(callback)
+		{
+			dbConnection(				
+				function(err, database)
+					{
+						callback(err, database);
+					}
+			)
+		}	
+	
+	var collection = function(collectionName, callback)
+		{
+			var METHOD = CLASS + ".collection: ";
+			istanceDb(function(err, database)
+					{
+						database.collection(
+							collectionName, 
+							function(err, collection)
+								{
+									console.log(METHOD + "GetCollection: " + collectionName);
+									callback(err, collection);
+								}
+						)
+					}
+			)
+		}
 	
 	//public
 	return {
 		collectionNames: collectionNames,
 		purgeDatabase: purgeDatabase, 
 		loadTestData: loadTestData,
-		istanceDb: db
+		istanceDb: istanceDb,
+		collection: collection
 	};
 }();
 

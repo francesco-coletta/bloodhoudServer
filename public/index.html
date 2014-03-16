@@ -14,6 +14,7 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
 	<div id="phonePanel"> ================================================ PHONE ================================================</div>
 	<div id="smsPanel"> ================================================ SMS ================================================</div>
 	<div id="callPanel"> ================================================ CALL ================================================</div>
+	<div id="whatsappPanel"> ================================================ WHATSAPP ================================================</div>
 
 
 
@@ -30,7 +31,7 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
 
     // var socket = io.connect();
     //var socket = io.connect('http://192.168.137.129:1337');
-    var socket = io.connect('http://bloodhoud.cloudfoundry.com');
+    var socket = io.connect('http://bloodhoud.cfapps.io');
 
     socket.on('welcome', function (data) {
         console.log('welcome - Data from Server: ', data);
@@ -141,12 +142,43 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
         	
             $('#callPanel').append(table);
             $('#callPanel').append("<br>");
+            $('#callPanel').append("<br>");
         });
+        
+        
+        //for each phone create whatsapp messages table
+        $.each(phones.phones, function (key, phone) {
+            var table = $('<table></table>').addClass('table');
+            table.attr("id","tableWhatsapp" + phone.imei);
+            table.attr("border", "1");
+            
+            var caption = $('<caption></caption>').text("Whatsapp messages for phone " + phone.imei);
+            table.append(caption);
+            
+            var head = $('<thead></thead>').addClass('thead');
+            var headRow = $('<tr></tr>').addClass('tr');
+            var headRowCell = $('<th></th>').addClass('th').text("id");
+            headRow.append(headRowCell);
+            var headRowCell = $('<th></th>').addClass('th').text("timestamp");
+            headRow.append(headRowCell);
+            var headRowCell = $('<th></th>').addClass('th').text("direction");
+            headRow.append(headRowCell);
+            var headRowCell = $('<th></th>').addClass('th').text("phoneNumber");
+            headRow.append(headRowCell);
+            var headRowCell = $('<th></th>').addClass('th').text("nameContact");
+            headRow.append(headRowCell);
+            var headRowCell = $('<th></th>').addClass('th').text("text");
+            headRow.append(headRowCell);
+            head.append(headRow);
+            table.append(head);
+        	
+            $('#whatsappPanel').append(table);
+            $('#whatsappPanel').append("<br>");
+            $('#whatsappPanel').append("<br>");
+        });        
         
         socket.emit('waitForTodaySms', {msg: 'Send me today sms'});
     });
-    
-
     
     
     socket.on('todaySmsList', function (sms) {
@@ -194,8 +226,31 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
             var rowCell = $('<td></td>').addClass('cell').text(call.duration);
             row.append(rowCell);
             $('#tableCall' + call.phone_id).append(row);        	
-        });        
+        });      
         
+        socket.emit('waitForTodayWhatsapp', {msg: 'Send me today whatsapp messages'});
+    });    
+    
+    
+    socket.on('todayWhatsappList', function (whatsapp) {
+        console.log('todayWhatsappList - Message from Server: ', whatsapp);
+        //for each whatsapp messages create row table
+        $.each(whatsapp.whatsapp, function (key, whatsapp) {
+            var row = $('<tr></tr>').addClass('row');
+            var rowCell = $('<td></td>').addClass('cell').text(whatsapp._id);
+            row.append(rowCell);
+            var rowCell = $('<td></td>').addClass('cell').text(whatsapp.timestamp);
+            row.append(rowCell);
+            var rowCell = $('<td></td>').addClass('cell').text(whatsapp.direction);
+            row.append(rowCell);
+            var rowCell = $('<td></td>').addClass('cell').text(whatsapp.phoneNumber);
+            row.append(rowCell);
+            var rowCell = $('<td></td>').addClass('cell').text(whatsapp.nameContact);
+            row.append(rowCell);
+            var rowCell = $('<td></td>').addClass('cell').text(whatsapp.text);
+            row.append(rowCell);
+            $('#tableWhatsapp' + whatsapp.phone_id).append(row);        	
+        });        
     });    
     
 
@@ -243,6 +298,26 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
         var rowCell = $('<td></td>').addClass('cell').text(newCall.duration);
         row.append(rowCell);
         $('#tableCall' + newCall.phone_id).append(row);
+    });    
+    
+    socket.on('newWhatsapp', function (whatsapp) {
+        console.log('newWhatsapp - Message from Server: ', whatsapp);
+        
+        var newWhatsapp = whatsapp.whatsapp;
+        var row = $('<tr></tr>').addClass('row');
+        var rowCell = $('<td></td>').addClass('cell').text(newWhatsapp._id);
+        row.append(rowCell);
+        var rowCell = $('<td></td>').addClass('cell').text(newWhatsapp.timestamp);
+        row.append(rowCell);
+        var rowCell = $('<td></td>').addClass('cell').text(newWhatsapp.direction);
+        row.append(rowCell);
+        var rowCell = $('<td></td>').addClass('cell').text(newWhatsapp.phoneNumber);
+        row.append(rowCell);
+        var rowCell = $('<td></td>').addClass('cell').text(newWhatsapp.nameContact);
+        row.append(rowCell);
+        var rowCell = $('<td></td>').addClass('cell').text(newWhatsapp.text);
+        row.append(rowCell);
+        $('#tableWhatsapp' + newWhatsapp.phone_id).append(row);
     });    
     
     socket.on('connect-error', function (err) {

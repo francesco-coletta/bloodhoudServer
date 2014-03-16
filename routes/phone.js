@@ -86,7 +86,8 @@ var phone = function (){
 							}
 							else{
 								console.log(METHOD + 'Il phone esiste già. Non lo ricreo.');
-								response.send(utils.returnResponse('OK', 'Il phone esiste già'));
+								//response.send(utils.returnResponse('OK', 'Il phone esiste già'));
+								response.send(phone);
 							}
 					}); 					
  				}
