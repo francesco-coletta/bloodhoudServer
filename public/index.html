@@ -30,7 +30,13 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
 
     // var socket = io.connect();
     //var socket = io.connect('http://192.168.137.129:1337');
-    var socket = io.connect('http://bloodhoud.cloudfoundry.com');
+    //var socket = io.connect('http://127.0.0.1:1337');    
+    //var socket = io.connect('http://bloodhoud.cloudfoundry.com');
+
+    // ********************************************************
+    //DEPLOY SUl CLOUD APPFOG
+    var socket = io.connect('http://bloodhoud.aws.af.cm');
+    // ********************************************************    
 
     socket.on('welcome', function (data) {
         console.log('welcome - Data from Server: ', data);
