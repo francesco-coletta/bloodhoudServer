@@ -8,7 +8,7 @@ var phoneDb = function (){
 		{
 			var METHOD = CLASS + ".findById: ";
 			console.log(METHOD + "Retrieving phone: " + id);
-			database.istanceDb.collection(database.collectionNames.PHONE, function(err, collection)
+			database.collection(database.collectionNames.PHONE, function(err, collection)
 				{
 					collection.findOne(
 						{ '_id': new BSON.ObjectID(id) }, function(err, phone)
@@ -34,7 +34,7 @@ var phoneDb = function (){
 				var METHOD = CLASS + ".findByIMei: ";
 				console.log(METHOD +"Retrieving phone by imei: " + imei);
 				
-				database.istanceDb.collection(database.collectionNames.PHONE, function(err, collection)
+				database.collection(database.collectionNames.PHONE, function(err, collection)
 					{
 						collection.findOne(
 							{ 'imei': imei }, function(err, phone)
@@ -61,7 +61,7 @@ var phoneDb = function (){
 					console.log(METHOD + "Retrieving all phones" );
 					//console.log(METHOD + "callback: " + callback);
 
-					database.istanceDb.collection(database.collectionNames.PHONE, function(err, collection)
+					database.collection(database.collectionNames.PHONE, function(err, collection)
 						{
 							collection.find().toArray(function(err, items)
 								{
@@ -85,7 +85,7 @@ var phoneDb = function (){
 				{
 					var METHOD = CLASS + ".create: ";
 					console.log(METHOD + "Creating phone: " + JSON.stringify(phone));
-					database.istanceDb.collection(database.collectionNames.PHONE, function(err, collection)
+					database.collection(database.collectionNames.PHONE, function(err, collection)
 						{
 							collection.insert(phone, function(err, result)
 								{
@@ -111,7 +111,7 @@ var phoneDb = function (){
 					var METHOD = CLASS + ".remove: ";
 					console.log(METHOD + "Deleting phone with id: " + id);
 
-					database.istanceDb.collection(
+					database.collection(
 						database.collectionNames.PHONE, 
 						function(err, collection){
 							collection.remove(

@@ -3,6 +3,7 @@ var bloodhoud_ws_server = function() {
 
 	var phoneDb = require('./routes/phoneDb');
 	var smsDb = require('./routes/smsDb');
+	var whatsappDb = require('./routes/whatsappDb');
 	var callDb = require('./routes/callDb');
 	
 	var connect = function(socket) {
@@ -40,6 +41,16 @@ var bloodhoud_ws_server = function() {
 			console.log(METHOD + "Retrieved " + call.length + " call");
 			socket.emit('todayCallList', { call: call });
 		});
+	}
+	
+	var sendTodayWhatsapp = function(socket, data) {
+		var METHOD = CLASS + ".sendTodayWhatsapp: ";
+		console.log(METHOD + 'data:' + JSON.stringify(data));
+		
+		whatsappDb.findAllToday(function(err, call){
+			console.log(METHOD + "Retrieved " + call.length + " call");
+			socket.emit('todayWhatsappList', { call: call });
+		});
 	}	
 	
 	var disconnect = function(socket) {
@@ -55,6 +66,7 @@ var bloodhoud_ws_server = function() {
 		clientReady: clientReady,
 		sendTodaySms: sendTodaySms,
 		sendTodayCall: sendTodayCall,
+		sendTodayWhatsapp: sendTodayWhatsapp,
 		disconnect: disconnect
 	}
 
