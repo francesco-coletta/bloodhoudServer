@@ -302,7 +302,7 @@ var serverHost = process.env.VCAP_APP_HOST || INADDR_ANY;
 var serverPort = process.env.VCAP_APP_PORT || 1337;
 
 //app.listen(serverPort);
-server.listen(serverPort);
+server.listen(serverPort, serverHost);
 
 console.log("> SERVER STARTED");
 console.log("> SERVER LISTENING at http://" + serverHost + ":" + serverPort);

@@ -2,7 +2,7 @@ var databaseCon = function(){
 	var CLASS = "databaseCon";
 	var METHOD = CLASS + ".main: ";
 	
-	var DB_URL_LOCAL = 'mongodb://localhost:27017/bloodhoudDB';
+	var DB_NAME = "bloodhoudDB";
 	var mongo = require('mongodb');
 	var MongoClient = mongo.MongoClient;
 	
@@ -23,21 +23,39 @@ var databaseCon = function(){
 				return;
 			}	
 			
-			var mongoURL = DB_URL_LOCAL;
-			if (process.env.VCAP_SERVICES)
-				{
-					//on cloudfoundry
-					console.log(METHOD + " Deploy on cloudfoundry");
-					var services = JSON.parse(process.env.VCAP_SERVICES);
-					var serviceKey = Object.keys(services)[0]
-					mongoURL = services[serviceKey][0].credentials.uri;
-				}
-			else
-				{
-					//on locale
-					console.log(METHOD + " Deploy on local");
-				}
-		
+
+			var mongo = {
+				"hostname":"localhost",
+				"port":27017,
+				"username":"",
+				"password":"",
+				"name":"",
+				"db":DB_NAME
+			}
+
+			if(process.env.VCAP_SERVICES){
+				//on cloud
+				console.log(METHOD + " Deploy on AppFog");
+				var env = JSON.parse(process.env.VCAP_SERVICES);
+				mongo = env['mongodb-1.8'][0]['credentials'];
+			}
+			else{
+				//on locale
+				console.log(METHOD + " Deploy on local");
+			}	
+
+			mongo.hostname = (mongo.hostname || 'localhost');
+			mongo.port = (mongo.port || 27017);
+			mongo.db = (mongo.db || DB_NAME);
+
+			var mongoURL = "";
+			if(mongo.username && mongo.password){
+				mongoURL = "mongodb://" + mongo.username + ":" + mongo.password + "@" + mongo.hostname + ":" + mongo.port + "/" + mongo.db;
+			}
+			else{
+				mongoURL = "mongodb://" + mongo.hostname + ":" + mongo.port + "/" + mongo.db;
+			}			
+
 			console.log(METHOD + "Connecting to DB " + mongoURL);
 			MongoClient.connect(
 				mongoURL, 
