@@ -2,6 +2,7 @@
     "name":"bloodhound",
     "description":"Bloodhound Application",
     "version":"0.0.1",
+    "main": "bloodhoud_server.js",
     "author": "Francesco Coletta",
     "private":true,
     "dependencies":{
