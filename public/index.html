@@ -35,8 +35,8 @@ window.jQuery || document.write('<script src="js/jquery-1.8.3.min.js"><\/script>
     //var socket = io.connect('http://bloodhoud.cloudfoundry.com');
 
     //*****************************************
-    // DEPLOY SUL CLOUD APPFOG
-    var socket = io.connect('http://bloodhoud.eu01.aws.af.cm');    
+    // DEPLOY SUL Redhat Openshift
+    var socket = io.connect('http://bloodhoud-zagor.rhcloud.com/');    
     //*****************************************
 
     socket.on('welcome', function (data) {
