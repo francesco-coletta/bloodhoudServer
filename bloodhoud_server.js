@@ -290,8 +290,9 @@ wsServer.sockets.on('connection', function (socket) {
 
 
 var INADDR_ANY = '127.0.0.1'; //'0.0.0.0';
-var serverHost = process.env.VCAP_APP_HOST || INADDR_ANY;
-var serverPort = process.env.VCAP_APP_PORT || 1337;
+var serverHost = process.env.OPENSHIFT_NODEJS_IP || INADDR_ANY;
+var serverPort = process.env.OPENSHIFT_NODEJS_PORT || 1337;
+
 
 //app.listen(serverPort);
 server.listen(serverPort, serverHost);
