@@ -207,7 +207,7 @@ var callDb = function(){
 					database.collection(database.collectionNames.CALL, function(err, collection)
 						{
 							collection.insert(
-								{ "phone_id": call.phone_id,
+								[{ "phone_id": call.phone_id,
 									"direction": call.direction, 
 									"timestampStart": new Date(call.timestampStart), 
 									"timestampEnd": new Date(call.timestampEnd), 
@@ -216,12 +216,13 @@ var callDb = function(){
 									"state": call.state,
 									"duration": call.duration,
 									"timeRecord": (new Date()).toISOString()
-								},
+								}],
 								function(err, result)
 									{
 										if (!err)	
 											{
-												var call = result[0];
+												var call = result.ops[0];
+												console.log(METHOD + 'Inserted %d documents into the "Call" collection. The documents inserted with "_id" are:', result.insertedCount, result);
 												console.log(METHOD + 'Call created: ' + JSON.stringify(call));
 												callback(null,  call);
 											}
