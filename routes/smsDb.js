@@ -223,7 +223,7 @@ var smsDb = function(){
 									{
 										if (!err)	
 											{
-												var sms = result[0];
+												var sms = result.ops[0];
 												console.log(METHOD + 'Inserted %d documents into the "Sms" collection. The documents inserted with "_id" are:', result.length, result);
 												console.log(METHOD + 'Sms created: ' + JSON.stringify(sms));
 												callback(null,  sms);
