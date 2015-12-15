@@ -87,11 +87,12 @@ var phoneDb = function (){
 					console.log(METHOD + "Creating phone: " + JSON.stringify(phone));
 					database.collection(database.collectionNames.PHONE, function(err, collection)
 						{
-							collection.insert(phone, function(err, result)
+							collection.insert([phone], function(err, result)
 								{
 									if (!err)	
 										{
-											var phone = result[0];
+											var phone = result.ops[0];
+											console.log(METHOD + 'Inserted %d documents into the "Phones" collection. The documents inserted with "_id" are:', result.insertedCount, result);
 											console.log(METHOD + 'Phone created: ' + JSON.stringify(phone));
 											callback(null,  phone);
 										}
