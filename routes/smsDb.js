@@ -211,14 +211,14 @@ var smsDb = function(){
 						{
 							collection.insert(
 								//{ "phone_id": new BSON.ObjectID(sms.phone_id), "direction": sms.direction, "timespamp": new Date(sms.timespamp), "phoneNumber": sms.phoneNumber, "text": sms.text},
-								{ "phone_id": sms.phone_id,
+								[{ "phone_id": sms.phone_id,
 									"direction": sms.direction, 
 									"timestamp": new Date(sms.timestamp), 
 									"phoneNumber": sms.phoneNumber, 
 									"nameContact": sms.nameContact,
 									"text": sms.text,
 									"timeRecord": (new Date()).toISOString()
-								},
+								}],
 								function(err, result)
 									{
 										if (!err)	
